@@ -1,6 +1,6 @@
 from collections import deque
 import functools
-from typing import Union, Tuple
+from typing import Union, Tuple, Deque
 from tinygrad.shape.symbolic import sint, Variable, MulNode, SumNode
 from tinygrad.helpers import prod
 
@@ -24,7 +24,7 @@ def signum(a): return bool(a > 0) - bool(a < 0)
 @functools.lru_cache(maxsize=None)
 def shape_div(a, b):
   if isinstance(a, tuple):    # tuple,
-    r: deque[Union[Integer, Tuple]] = deque()
+    r: Deque[Union[Integer, Tuple]] = deque()
     for v in reversed(a):
       r.appendleft(shape_div(v,b))
       b = shape_div(b, product(v))
@@ -45,7 +45,7 @@ def compact_strides(a, init: Union[Tuple, int]=1) -> Union[Tuple, Integer]:
       assert len(a) == len(init)
       return tuple(compact_strides(v, i) for v, i in zip(a, init))
     if isinstance(a, tuple) and isinstance(init, int):
-        r: deque[Union[Integer, Tuple]] = deque()
+        r: Deque[Union[Integer, Tuple]] = deque()
         for v in reversed(a):
             r.appendleft(compact_strides(v, init))
             init = init * product(v)

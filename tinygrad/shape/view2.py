@@ -1,4 +1,4 @@
-from typing import Tuple, Optional, Union, cast
+from typing import Tuple, Optional, Union, cast, Deque
 from tinygrad.shape.int_tuple import Integer, compact_strides, canonicalize_strides, crd2idx, product, shape_div, flatten
 from tinygrad.shape.symbolic import Variable
 import functools
@@ -118,8 +118,8 @@ def composition(viewA: View, viewB:View):
   if isinstance(viewB.shape, tuple):
     return make_view(*tuple(composition(viewA, viewB[i]) for i in range(len(viewB.shape))))
   else:
-    result_shape: deque[Union[int, Integer, Tuple]] = deque()
-    result_strides: deque[Union[int, Integer, Tuple]]  = deque()
+    result_shape: Deque[Union[int, Integer, Tuple]] = deque()
+    result_strides: Deque[Union[int, Integer, Tuple]]  = deque()
     rest_shape   = viewB.shape
     rest_strides  = viewB.strides
     for (s, d) in zip(reversed(flatten(viewA.shape)[1:]), reversed(flatten(viewA.strides)[1:])):
